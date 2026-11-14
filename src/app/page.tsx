@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import ArchitectBackground from "@/components/ui/ArchitectBackground";
+import ScrollProgressBar from "@/components/ui/ScrollProgressBar";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Skills from "@/components/sections/Skills";
@@ -11,6 +12,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
+      <ScrollProgressBar />
       <ArchitectBackground />
       <Navbar />
       <main>

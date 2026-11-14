@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import AnimatedText from "@/components/ui/AnimatedText";
 import SocialIcon from "@/components/ui/SocialIcon";
 import ScrollIndicator from "@/components/ui/ScrollIndicator";
@@ -8,6 +8,13 @@ import { GitHubIcon, LinkedInIcon, FacebookIcon, TikTokIcon } from "@/components
 import { profile } from "@/data/profile";
 
 export default function Hero() {
+  const { scrollY } = useScroll();
+  const smoothY = useSpring(scrollY, { stiffness: 100, damping: 25 });
+
+  const heroY = useTransform(smoothY, [0, 500], [0, 90]);
+  const heroOpacity = useTransform(smoothY, [0, 450], [1, 0.3]);
+  const avatarScale = useTransform(smoothY, [0, 400], [1, 0.88]);
+
   return (
     <section
       id="home"
@@ -18,9 +25,13 @@ export default function Hero() {
         <div className="absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-blue-500/[0.08] blur-[140px] dark:bg-cyan-500/[0.08]" />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center gap-6 text-center">
+      <motion.div
+        style={{ y: heroY, opacity: heroOpacity }}
+        className="relative z-10 flex flex-col items-center gap-6 text-center"
+      >
         {/* Avatar */}
         <motion.div
+          style={{ scale: avatarScale }}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.2 }}
@@ -103,7 +114,7 @@ export default function Hero() {
           <span className="h-2 w-2 rounded-full bg-green-500 dark:bg-green-400" />
           <span>📍 {profile.location}</span>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Scroll indicator */}
       <div className="mt-12 pb-8">

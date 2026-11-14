@@ -1,19 +1,52 @@
 "use client";
 
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+
 export default function ArchitectBackground() {
+  const { scrollYProgress } = useScroll();
+
+  // Smooth scroll spring for organic, buttery motion
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 25,
+    restDelta: 0.001,
+  });
+
+  // Parallax transforms for 3D elements
+  const cubeRotate = useTransform(smoothProgress, [0, 1], [0, 280]);
+  const cubeY = useTransform(smoothProgress, [0, 1], [0, 220]);
+  const cubeScale = useTransform(smoothProgress, [0, 0.5, 1], [1, 1.1, 0.95]);
+
+  const compassRotate = useTransform(smoothProgress, [0, 1], [0, -240]);
+  const compassY = useTransform(smoothProgress, [0, 1], [0, -140]);
+
+  const perspectiveY = useTransform(smoothProgress, [0, 1], [0, 120]);
+  const perspectiveSkew = useTransform(smoothProgress, [0, 1], [0, -8]);
+
+  const glow1Y = useTransform(smoothProgress, [0, 1], [0, 180]);
+  const glow2Y = useTransform(smoothProgress, [0, 1], [0, -180]);
+  const gridY = useTransform(smoothProgress, [0, 1], [0, -60]);
+
   return (
     <div
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
-      {/* 1. Ambient Neon Atmospheric Glows */}
-      <div className="absolute -left-40 top-0 h-[600px] w-[600px] rounded-full bg-cyan-500/[0.07] blur-[140px] dark:bg-cyan-500/[0.08]" />
-      <div className="absolute right-[-10%] top-[25%] h-[700px] w-[700px] rounded-full bg-blue-600/[0.05] blur-[160px] dark:bg-blue-500/[0.06]" />
+      {/* 1. Ambient Neon Atmospheric Glows with Parallax */}
+      <motion.div
+        style={{ y: glow1Y }}
+        className="absolute -left-40 top-0 h-[600px] w-[600px] rounded-full bg-cyan-500/[0.07] blur-[140px] dark:bg-cyan-500/[0.08]"
+      />
+      <motion.div
+        style={{ y: glow2Y }}
+        className="absolute right-[-10%] top-[25%] h-[700px] w-[700px] rounded-full bg-blue-600/[0.05] blur-[160px] dark:bg-blue-500/[0.06]"
+      />
       <div className="absolute bottom-[-10%] left-[20%] h-[600px] w-[600px] rounded-full bg-purple-600/[0.04] blur-[150px] dark:bg-indigo-500/[0.05]" />
 
-      {/* 2. Architectural Blueprint Grid with Crosshairs & Sub-divisions */}
-      <svg
-        className="absolute inset-0 h-full w-full opacity-60 dark:opacity-40"
+      {/* 2. Architectural Blueprint Grid with subtle parallax vertical drift */}
+      <motion.svg
+        style={{ y: gridY }}
+        className="absolute inset-0 h-[120%] w-full opacity-60 dark:opacity-40"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
@@ -61,25 +94,30 @@ export default function ArchitectBackground() {
         </defs>
 
         <rect width="100%" height="100%" fill="url(#arch-major-grid)" />
-      </svg>
+      </motion.svg>
 
-      {/* 3. 3D Isometric Architectural Wireframe Structures */}
-      {/* Top Right 3D Wireframe Cube / Pavilion Frame */}
-      <div className="absolute -right-16 top-20 hidden opacity-40 transition-opacity duration-700 sm:block dark:opacity-50">
+      {/* 3. 3D Isometric Architectural Wireframe Cube (Parallax Rotation & Drift) */}
+      <motion.div
+        style={{
+          y: cubeY,
+          rotate: cubeRotate,
+          scale: cubeScale,
+        }}
+        className="absolute -right-16 top-20 hidden opacity-45 transition-opacity duration-700 sm:block dark:opacity-60"
+      >
         <svg
-          width="340"
-          height="340"
+          width="360"
+          height="360"
           viewBox="0 0 200 200"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="animate-[spin_60s_linear_infinite]"
         >
           {/* Outer Isometric Cube */}
           <polygon
             points="100,20 170,60 170,140 100,180 30,140 30,60"
             stroke="currentColor"
             strokeWidth="0.8"
-            className="text-blue-600/[0.2] dark:text-cyan-400/[0.25]"
+            className="text-blue-600/[0.25] dark:text-cyan-400/[0.3]"
           />
           {/* Internal Isometric Edges */}
           <line
@@ -89,7 +127,7 @@ export default function ArchitectBackground() {
             y2="180"
             stroke="currentColor"
             strokeWidth="0.8"
-            className="text-blue-600/[0.2] dark:text-cyan-400/[0.25]"
+            className="text-blue-600/[0.25] dark:text-cyan-400/[0.3]"
           />
           <line
             x1="100"
@@ -98,7 +136,7 @@ export default function ArchitectBackground() {
             y2="60"
             stroke="currentColor"
             strokeWidth="0.8"
-            className="text-blue-600/[0.2] dark:text-cyan-400/[0.25]"
+            className="text-blue-600/[0.25] dark:text-cyan-400/[0.3]"
           />
           <line
             x1="100"
@@ -107,7 +145,7 @@ export default function ArchitectBackground() {
             y2="60"
             stroke="currentColor"
             strokeWidth="0.8"
-            className="text-blue-600/[0.2] dark:text-cyan-400/[0.25]"
+            className="text-blue-600/[0.25] dark:text-cyan-400/[0.3]"
           />
 
           {/* Inner Nested Floating Wireframe Cube */}
@@ -116,7 +154,7 @@ export default function ArchitectBackground() {
             stroke="currentColor"
             strokeWidth="0.6"
             strokeDasharray="3 3"
-            className="text-neutral-500/[0.25] dark:text-white/[0.2]"
+            className="text-neutral-500/[0.3] dark:text-white/[0.25]"
           />
           <line
             x1="100"
@@ -126,7 +164,7 @@ export default function ArchitectBackground() {
             stroke="currentColor"
             strokeWidth="0.6"
             strokeDasharray="3 3"
-            className="text-neutral-500/[0.25] dark:text-white/[0.2]"
+            className="text-neutral-500/[0.3] dark:text-white/[0.25]"
           />
           <line
             x1="100"
@@ -136,7 +174,7 @@ export default function ArchitectBackground() {
             stroke="currentColor"
             strokeWidth="0.6"
             strokeDasharray="3 3"
-            className="text-neutral-500/[0.25] dark:text-white/[0.2]"
+            className="text-neutral-500/[0.3] dark:text-white/[0.25]"
           />
           <line
             x1="100"
@@ -146,16 +184,22 @@ export default function ArchitectBackground() {
             stroke="currentColor"
             strokeWidth="0.6"
             strokeDasharray="3 3"
-            className="text-neutral-500/[0.25] dark:text-white/[0.2]"
+            className="text-neutral-500/[0.3] dark:text-white/[0.25]"
           />
         </svg>
-      </div>
+      </motion.div>
 
-      {/* Middle Left 3D Perspective Plane & Technical Drafting Compass */}
-      <div className="absolute -left-20 top-[45%] hidden opacity-30 sm:block dark:opacity-40">
+      {/* Middle Left 3D Technical Drafting Compass (Parallax Counter-Rotation) */}
+      <motion.div
+        style={{
+          y: compassY,
+          rotate: compassRotate,
+        }}
+        className="absolute -left-20 top-[40%] hidden opacity-35 sm:block dark:opacity-45"
+      >
         <svg
-          width="360"
-          height="360"
+          width="380"
+          height="380"
           viewBox="0 0 240 240"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -167,7 +211,7 @@ export default function ArchitectBackground() {
             r="100"
             stroke="currentColor"
             strokeWidth="0.6"
-            className="text-neutral-800/[0.1] dark:text-cyan-400/[0.15]"
+            className="text-neutral-800/[0.12] dark:text-cyan-400/[0.18]"
           />
           <circle
             cx="120"
@@ -176,7 +220,7 @@ export default function ArchitectBackground() {
             stroke="currentColor"
             strokeWidth="0.6"
             strokeDasharray="4 4"
-            className="text-neutral-800/[0.15] dark:text-white/[0.15]"
+            className="text-neutral-800/[0.15] dark:text-white/[0.18]"
           />
           <circle
             cx="120"
@@ -184,7 +228,7 @@ export default function ArchitectBackground() {
             r="40"
             stroke="currentColor"
             strokeWidth="0.8"
-            className="text-blue-500/[0.2] dark:text-cyan-300/[0.25]"
+            className="text-blue-500/[0.2] dark:text-cyan-300/[0.28]"
           />
 
           {/* Coordinate Cross Axis */}
@@ -253,10 +297,16 @@ export default function ArchitectBackground() {
             AXIS_Z: 0.00
           </text>
         </svg>
-      </div>
+      </motion.div>
 
-      {/* Bottom Right 3D Perspective Grid Vanishing Line */}
-      <div className="absolute -bottom-10 right-0 hidden h-72 w-96 opacity-25 md:block dark:opacity-35">
+      {/* Bottom Right 3D Perspective Grid Vanishing Line (Parallax Depth Shift) */}
+      <motion.div
+        style={{
+          y: perspectiveY,
+          skewX: perspectiveSkew,
+        }}
+        className="absolute -bottom-10 right-0 hidden h-80 w-[420px] opacity-30 md:block dark:opacity-40"
+      >
         <svg
           width="100%"
           height="100%"
@@ -272,7 +322,7 @@ export default function ArchitectBackground() {
             y2="200"
             stroke="currentColor"
             strokeWidth="0.7"
-            className="text-blue-500/[0.15] dark:text-cyan-400/[0.2]"
+            className="text-blue-500/[0.15] dark:text-cyan-400/[0.22]"
           />
           <line
             x1="300"
@@ -281,7 +331,7 @@ export default function ArchitectBackground() {
             y2="200"
             stroke="currentColor"
             strokeWidth="0.7"
-            className="text-blue-500/[0.15] dark:text-cyan-400/[0.2]"
+            className="text-blue-500/[0.15] dark:text-cyan-400/[0.22]"
           />
           <line
             x1="300"
@@ -290,7 +340,7 @@ export default function ArchitectBackground() {
             y2="200"
             stroke="currentColor"
             strokeWidth="0.7"
-            className="text-blue-500/[0.15] dark:text-cyan-400/[0.2]"
+            className="text-blue-500/[0.15] dark:text-cyan-400/[0.22]"
           />
           <line
             x1="300"
@@ -299,7 +349,7 @@ export default function ArchitectBackground() {
             y2="200"
             stroke="currentColor"
             strokeWidth="0.7"
-            className="text-blue-500/[0.15] dark:text-cyan-400/[0.2]"
+            className="text-blue-500/[0.15] dark:text-cyan-400/[0.22]"
           />
           <line
             x1="300"
@@ -308,7 +358,7 @@ export default function ArchitectBackground() {
             y2="200"
             stroke="currentColor"
             strokeWidth="0.7"
-            className="text-blue-500/[0.15] dark:text-cyan-400/[0.2]"
+            className="text-blue-500/[0.15] dark:text-cyan-400/[0.22]"
           />
 
           {/* Cross horizontal perspective tiers */}
@@ -319,7 +369,7 @@ export default function ArchitectBackground() {
             y2="70"
             stroke="currentColor"
             strokeWidth="0.7"
-            className="text-neutral-700/[0.15] dark:text-white/[0.15]"
+            className="text-neutral-700/[0.15] dark:text-white/[0.18]"
           />
           <line
             x1="150"
@@ -328,7 +378,7 @@ export default function ArchitectBackground() {
             y2="110"
             stroke="currentColor"
             strokeWidth="0.7"
-            className="text-neutral-700/[0.15] dark:text-white/[0.15]"
+            className="text-neutral-700/[0.15] dark:text-white/[0.18]"
           />
           <line
             x1="70"
@@ -337,10 +387,10 @@ export default function ArchitectBackground() {
             y2="155"
             stroke="currentColor"
             strokeWidth="0.7"
-            className="text-neutral-700/[0.15] dark:text-white/[0.15]"
+            className="text-neutral-700/[0.15] dark:text-white/[0.18]"
           />
         </svg>
-      </div>
+      </motion.div>
 
       {/* 4. Elegant Focus Vignette: Keeps center content clear & readable */}
       <div
