@@ -2,6 +2,14 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+:root {
+  --vignette-color: rgba(250, 250, 250, 0.7);
+}
+
+.dark {
+  --vignette-color: rgba(10, 10, 10, 0.75);
+}
+
 /* Custom smooth scroll */
 html {
   scroll-behavior: smooth;
